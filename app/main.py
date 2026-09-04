@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, Query
 from app.schemas import AdCreate,  AdUpdate, AdResponse
-from app.ads import create_ad, get_ad, update_ad, delete_ad, search_ads
+from app.ads_new import create_ad, get_ad, update_ad, delete_ad, search_ads
 
 
 app = FastAPI(title="Ads Service", version="1.0.0")
