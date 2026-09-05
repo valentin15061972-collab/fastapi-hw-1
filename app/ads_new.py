@@ -47,7 +47,11 @@ async def delete_ad(ad_id: int) -> bool:
 async def search_ads(
     query: str | None = None,
     title: str | None = None,
+    description: str | None = None,
     author: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    creation_date: str | None = None,
 ) -> list[AdResponse]:
     results = []
     for ad in ads_store.values():
@@ -58,11 +62,23 @@ async def search_ads(
                 match = False
         if title is not None and title.lower() not in ad["title"].lower():
             match = False
+        if description is not None and description.lower() not in ad["description"].lower():
+            match = False
         if author is not None and author.lower() not in ad["author"].lower():
             match = False
+        if min_price is not None and ad["price"] < min_price:
+            match = False
+        if max_price is not None and ad["price"] > max_price:
+            match = False
+        if creation_date is not None:
+            ad_date = ad["creation_date"].strftime("%Y-%m-%d")
+            if ad_date != creation_date:
+                match = False
         if match:
             results.append(to_response(ad))
     return results
+
+   
 
 
 
