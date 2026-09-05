@@ -6,12 +6,12 @@ from app.ads_new import create_ad, get_ad, update_ad, delete_ad, search_ads
 app = FastAPI(title="Ads Service", version="1.0.0")
 
 
-@app.post("/ad", response_model=AdResponse, summary="Create an ad")
+@app.post("/advertisement", response_model=AdResponse, summary="Create an ad")
 async def create_ad_endpoint(ad: AdCreate):
     return await create_ad(ad)
 
 
-@app.get("/ad/{ad_id}", response_model=AdResponse, summary="Get an ad")
+@app.get("/advertisement/{advertisement_id}", response_model=AdResponse, summary="Get an ad")
 async def get_ad_endpoint(ad_id: int):
     result = await get_ad(ad_id)
     if result is None:
@@ -19,7 +19,7 @@ async def get_ad_endpoint(ad_id: int):
     return result
 
 
-@app.patch("/ad/{ad_id}", response_model=AdResponse, summary="Update an ad")
+@app.patch("/advertisement/{advertisement_id}", response_model=AdResponse, summary="Update an ad")
 async def update_ad_endpoint(ad_id: int, ad_update: AdUpdate):
     result = await update_ad(ad_id, ad_update)
     if result is None:
@@ -27,17 +27,30 @@ async def update_ad_endpoint(ad_id: int, ad_update: AdUpdate):
     return result
 
 
-@app.delete("/ad/{ad_id}", status_code=204, summary="Delete an ad")
+@app.delete("/advertisement/{advertisement_id}", status_code=204, summary="Delete an ad")
 async def delete_ad_endpoint(ad_id: int):
     deleted = await delete_ad(ad_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Ad not found")
 
 
-@app.get("/ad", response_model=list[AdResponse])
+@app.get("/advertisement", response_model=list[AdResponse])
 async def search_ads_endpoint(
     query: str | None = Query(None),
     title: str | None = Query(None),
+    description: str | None = Query(None),
     author: str | None = Query(None),
+    min_price: float | None = Query(None, gt=0),
+    max_price: float | None = Query(None, gt=0),
+    creation_date: str | None = Query(None),
 ):
-    return await search_ads(query=query, title=title, author=author)
+    return await search_ads(
+        query=query,
+        title=title,
+        description=description,
+        author=author,
+        min_price=min_price,
+        max_price=max_price,
+        creation_date=creation_date,
+    )
+
